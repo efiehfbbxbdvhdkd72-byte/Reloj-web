@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reloj Digital Exacto</title>
+<!-- Usamos Tailwind CSS para un diseño moderno y responsivo -->
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.tabular-nums {
+font-variant-numeric: tabular-nums;
+}
+</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4 selection:bg-indigo-500 selection:text-white">
+
+<div class="w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 text-center relative overflow-hidden">
+<!-- Efecto de brillo de fondo -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+<h1 class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-6">Hora Local Actual</h1>
+
+<!-- Reloj principal -->
+<div class="flex items-baseline justify-center gap-1 my-4">
+<span id="time-display" class="text-5xl sm:text-6xl font-black tracking-tight tabular-nums bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">--:--:--</span>
+<span id="ampm-display" class="text-xl sm:text-2xl font-bold text-indigo-400 ml-1">--</span>
+</div>
+
+<!-- Segundos hasta el siguiente minuto -->
+<div class="mt-8 pt-6 border-t border-slate-800/80">
+<div class="flex justify-between text-xs font-medium text-slate-400 mb-2">
+<span>Cambio de minuto en:</span>
+<span id="seconds-remaining" class="text-indigo-400 font-bold tabular-nums">--s</span>
+</div>
+<!-- Barra de progreso -->
+<div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
+<div id="progress-bar" class="bg-gradient-to-r from-indigo-500 to-blue-500 h-full rounded-full transition-all duration-300 ease-linear" style="width: 100%;"></div>
+</div>
+</div>
+</div>
+
+<script>
+function updateClock() {
+const now = new Date();
+let hours = now.getHours();
+const minutes = now.getMinutes();
+const seconds = now.getSeconds();
+
+// Formato de 12 horas con AM/PM
+const ampm = hours >= 12 ? 'PM' : 'AM';
+hours = hours % 12;
+hours = hours ? hours : 12; // La hora '0' se convierte en '12'
+
+const formattedHours = String(hours).padStart(2, '0');
+const formattedMinutes = String(minutes).padStart(2, '0');
+const formattedSeconds = String(seconds).padStart(2, '0');
+
+// Mostrar hora actual exacta del dispositivo
+document.getElementById('time-display').textContent = ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+document.getElementById('ampm-display').textContent = ampm;
+
+// Cuenta regresiva para el siguiente cambio de minuto
+const secondsLeft = 60 - seconds;
+document.getElementById('seconds-remaining').textContent = ``${secondsLeft}s`;
+
+// Ancho de la barra de progreso
+const progressPercent = (secondsLeft / 60) * 100;
+document.getElementById('progress-bar').style.width = ${progressPercent}%;
+}
+
+// Ejecutar inmediatamente y actualizar cada segundo
+updateClock();
+setInterval(updateClock, 1000);
+</script>
+</body>
+</html>
